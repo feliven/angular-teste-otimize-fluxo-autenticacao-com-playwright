@@ -7,15 +7,9 @@
         formControlName="somenteIda"
       >
         <mat-button-toggle [value]="false" data-testid="botao-ida-e-volta">
-          <mat-icon *ngIf="!formBuscaService.formBusca.get('somenteIda')?.value"
-            >check</mat-icon
-          >
           IDA E VOLTA
         </mat-button-toggle>
         <mat-button-toggle [value]="true" data-testid="botao-somente-ida">
-          <mat-icon *ngIf="formBuscaService.formBusca.get('somenteIda')?.value"
-            >check</mat-icon
-          >
           SOMENTE IDA
         </mat-button-toggle>
       </mat-button-toggle-group>
