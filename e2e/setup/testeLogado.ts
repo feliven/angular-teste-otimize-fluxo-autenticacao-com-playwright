@@ -1,4 +1,5 @@
 import * as path from 'path';
+import * as fs from 'fs';
 import { expect } from '@playwright/test';
 
 import { test } from './fixtures';
@@ -15,6 +16,14 @@ export const testeLogado = test.extend<object, { arquivoInfoLogin: string }>({
         `.auth/usuario-${id}.json`
       );
 
+      // No primeiro worker, no Teste 1, o arquivo será criado, porque o arquivo ainda não existe.
+      // A partir dos próximos testes que esse worker fizer, ele vai usar o arquivo já existente.
+
+      if (fs.existsSync(caminhoArquivo)) {
+        await caminhoArquivo;
+        return;
+      }
+
       const page = await browser.newPage({ storageState: undefined });
       const paginaCadastro = new PaginaCadastro(page);
       const paginaLogin = new PaginaLogin(page);
@@ -30,6 +39,7 @@ export const testeLogado = test.extend<object, { arquivoInfoLogin: string }>({
       await page.context().storageState({ path: caminhoArquivo });
 
       await use(caminhoArquivo);
+      await page.close();
     },
     { scope: 'worker' },
   ],
