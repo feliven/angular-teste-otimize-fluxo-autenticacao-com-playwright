@@ -1,5 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
-import { Genero } from 'e2e/operacoes/gerarPerfil';
+import { Genero, Perfil } from 'e2e/operacoes/gerarPerfil';
 
 export default class PaginaCadastro {
   private readonly page: Page;
@@ -159,11 +159,27 @@ export default class PaginaCadastro {
     await this.botaoEnviarFormulario.click();
   }
 
+  async cadastrarUsuario(usuario: Perfil) {
+    await this.inserirNome(usuario.nome);
+    await this.inserirDataNascimento(usuario.dataNascimento);
+    await this.selecionarGenero(usuario.genero);
+    await this.inserirCPF(usuario.cpf);
+    await this.inserirTelefone(usuario.telefone);
+    await this.inserirCidade(usuario.cidade);
+    await this.inserirEstado(usuario.estado);
+    await this.inserirEmail(usuario.email);
+    await this.inserirSenha(usuario.senha);
+    await this.inserirConfirmacaoEmail(usuario.email);
+    await this.inserirConfirmacaoSenha(usuario.senha);
+    await this.marcarCheckboxAceite();
+    await this.clicarBotaoCadastrar();
+  }
+
   async cadastroFeitoComSucesso() {
     await expect(this.page).toHaveURL('/auth/login');
   }
 
-  async estaMostrandoMensagemDeErro(mensagem: string) {
+  async mostraMensagemErro(mensagem: string) {
     const elementoErro = this.page.getByText(mensagem);
     await expect(elementoErro).toBeVisible();
   }

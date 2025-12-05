@@ -1,27 +1,30 @@
-import { gerarPerfil } from 'e2e/operacoes/gerarPerfil';
+import { gerarPerfil, Perfil } from 'e2e/operacoes/gerarPerfil';
 import { test } from '../setup/fixtures';
+import PaginaCadastro from 'e2e/page-objects/PaginaCadastro';
 
 test.describe('Página de cadastro', () => {
-  test('Deve conseguir fazer cadastro', async ({ paginaCadastro }) => {
+  let novoUsuario: Perfil;
+
+  test.beforeEach(async ({ paginaCadastro }) => {
     await paginaCadastro.visitar();
 
-    const novoUsuario = gerarPerfil();
+    novoUsuario = gerarPerfil();
+  });
 
-    console.log(novoUsuario);
-
-    await paginaCadastro.inserirNome(novoUsuario.nome);
-    await paginaCadastro.inserirDataNascimento(novoUsuario.dataNascimento);
-    await paginaCadastro.selecionarGenero(novoUsuario.genero);
-    await paginaCadastro.inserirCPF(novoUsuario.cpf);
-    await paginaCadastro.inserirTelefone(novoUsuario.telefone);
-    await paginaCadastro.inserirCidade(novoUsuario.cidade);
-    await paginaCadastro.inserirEstado(novoUsuario.estado);
-    await paginaCadastro.inserirEmail(novoUsuario.email);
-    await paginaCadastro.inserirSenha(novoUsuario.senha);
-    await paginaCadastro.inserirConfirmacaoEmail(novoUsuario.email);
-    await paginaCadastro.inserirConfirmacaoSenha(novoUsuario.senha);
-    await paginaCadastro.marcarCheckboxAceite();
-    await paginaCadastro.clicarBotaoCadastrar();
+  test('Deve conseguir fazer cadastro', async ({ paginaCadastro }) => {
+    await paginaCadastro.cadastrarUsuario(novoUsuario);
     await paginaCadastro.cadastroFeitoComSucesso();
+  });
+
+  test('Não deve conseguir fazer cadastro com email duplicado', async ({
+    paginaCadastro,
+  }) => {
+    await paginaCadastro.cadastrarUsuario(novoUsuario);
+    await paginaCadastro.cadastroFeitoComSucesso();
+
+    await paginaCadastro.visitar();
+
+    await paginaCadastro.cadastrarUsuario(novoUsuario);
+    await paginaCadastro.mostraMensagemErro('E-mail já utilizado');
   });
 });
