@@ -1,10 +1,7 @@
-import test from '@playwright/test';
-import PaginaPrincipal from './page-objects/PaginaPrincipal';
+import { test } from '../setup/fixtures';
 
 test.describe('Buscar Passagens', () => {
-  test('Deve buscar passagem de somente ida', async ({ page }) => {
-    const paginaPrincipal = new PaginaPrincipal(page);
-
+  test('Deve buscar passagem de somente ida', async ({ paginaPrincipal }) => {
     await paginaPrincipal.visitar();
     await paginaPrincipal.definirSomenteIda();
 
@@ -16,7 +13,7 @@ test.describe('Buscar Passagens', () => {
 
     await paginaPrincipal.definirOrigemEDestino(
       'minas gerais',
-      'rio de janeiro',
+      'rio de janeiro'
     );
     await paginaPrincipal.definirData(new Date());
     await paginaPrincipal.buscarPassagens();
@@ -24,7 +21,7 @@ test.describe('Buscar Passagens', () => {
     await paginaPrincipal.estaMostrandoPassagem(
       'Somente ida',
       'Minas Gerais',
-      'Rio de Janeiro',
+      'Rio de Janeiro'
     );
   });
 });
