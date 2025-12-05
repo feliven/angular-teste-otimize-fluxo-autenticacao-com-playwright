@@ -132,6 +132,7 @@ export default class PaginaCadastro {
 
   async inserirEstado(estado: string) {
     await this.campoEstado.fill(estado);
+    await this.campoEstado.press('Enter');
   }
 
   async inserirEmail(email: string) {
