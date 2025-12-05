@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { Genero } from 'e2e/operacoes/gerarPerfil';
 
 export default class PaginaCadastro {
   private readonly page: Page;
@@ -6,9 +7,12 @@ export default class PaginaCadastro {
   private readonly campoDataNascimento: Locator;
   private readonly campoNome: Locator;
   private readonly campoCPF: Locator;
-  private readonly radioFeminino: Locator;
-  private readonly radioMasculino: Locator;
-  private readonly radioNaoInformar: Locator;
+
+  //   private readonly radioFeminino: Locator;
+  //   private readonly radioMasculino: Locator;
+  //   private readonly radioNaoInformar: Locator;
+  private readonly radiosGenero: { [chave in Genero]: Locator };
+
   private readonly campoTelefone: Locator;
   private readonly campoCidade: Locator;
   private readonly campoEstado: Locator;
@@ -24,21 +28,35 @@ export default class PaginaCadastro {
     this.botaoVisitarPaginaCadastro = page.getByTestId(
       'header-botao-cadastre-se'
     );
+
     this.campoNome = page.getByTestId('form-base-input-nome');
     this.campoDataNascimento = page.getByTestId(
       'form-base-input-data-nascimento'
     );
     this.campoCPF = page.getByTestId('form-base-input-cpf');
-    this.radioFeminino = page.getByTestId('form-base-radio-genero-feminino');
-    this.radioMasculino = page.getByTestId('form-base-radio-genero-masculino');
-    this.radioNaoInformar = page.getByTestId(
-      'form-base-radio-genero-nao-informar'
-    );
+
+    const radioFeminino = page
+      .getByTestId('form-base-radio-genero-feminino')
+      .getByLabel('Feminino');
+    const radioMasculino = page
+      .getByTestId('form-base-radio-genero-masculino')
+      .getByLabel('Masculino');
+    const radioNaoInformar = page
+      .getByTestId('form-base-radio-genero-nao-informar')
+      .getByLabel('Prefiro não informar');
+
+    this.radiosGenero = {
+      [Genero.FEMININO]: radioFeminino,
+      [Genero.MASCULINO]: radioMasculino,
+      [Genero.OUTRO]: radioNaoInformar,
+    };
+
     this.campoTelefone = page.getByTestId('form-base-input-telefone');
     this.campoCidade = page.getByTestId('form-base-input-cidade');
     this.campoEstado = page
       .getByTestId('form-base-container-estado')
       .getByLabel('Estado');
+
     this.campoEmail = page.getByTestId('form-base-input-email');
     this.campoSenha = page.getByTestId('form-base-input-senha');
     this.campoConfirmarEmail = page.getByTestId(
@@ -47,7 +65,10 @@ export default class PaginaCadastro {
     this.campoConfirmarSenha = page.getByTestId(
       'form-base-input-confirmar-senha'
     );
-    this.checkboxTermos = page.getByTestId('form-base-checkbox-termos');
+
+    this.checkboxTermos = page
+      .getByTestId('form-base-checkbox-termos')
+      .getByLabel('Li e aceito');
     this.botaoEnviarFormulario = page.getByTestId(
       'form-base-botao-submeter-form'
     );
@@ -75,23 +96,26 @@ export default class PaginaCadastro {
     await this.campoDataNascimento.fill(dataFormatoUS);
   }
 
-  async selecionarGenero(opcao: string) {
-    switch (opcao) {
-      case 'FEMININO':
-        await this.radioFeminino.click();
-        break;
+  async selecionarGenero(opcao: Genero) {
+    const radioGenero = this.radiosGenero[opcao];
+    await radioGenero.check();
 
-      case 'MASCULINO':
-        await this.radioMasculino.click();
-        break;
+    // switch (opcao) {
+    //   case 'FEMININO':
+    //     await this.radiosGenero.check();
+    //     break;
 
-      case 'OUTRO':
-        await this.radioNaoInformar.click();
-        break;
+    //   case 'MASCULINO':
+    //     await this.radioMasculino.check();
+    //     break;
 
-      default:
-        break;
-    }
+    //   case 'OUTRO':
+    //     await this.radioNaoInformar.check();
+    //     break;
+
+    //   default:
+    //     break;
+    // }
   }
 
   async inserirCPF(cpf: string) {
@@ -127,11 +151,15 @@ export default class PaginaCadastro {
   }
 
   async marcarCheckboxAceite() {
-    await this.checkboxTermos.click();
+    await this.checkboxTermos.check();
   }
 
   async clicarBotaoCadastrar() {
     await this.botaoEnviarFormulario.click();
+  }
+
+  async cadastroFeitoComSucesso() {
+    await expect(this.page).toHaveURL('/auth/login');
   }
 
   async estaMostrandoMensagemDeErro(mensagem: string) {

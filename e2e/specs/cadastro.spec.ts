@@ -22,5 +22,6 @@ test.describe('Página de cadastro', () => {
     await paginaCadastro.inserirConfirmacaoSenha(novoUsuario.senha);
     await paginaCadastro.marcarCheckboxAceite();
     await paginaCadastro.clicarBotaoCadastrar();
+    await paginaCadastro.cadastroFeitoComSucesso();
   });
 });
