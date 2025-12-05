@@ -2,6 +2,7 @@ import { Locator, Page, expect } from '@playwright/test';
 
 export default class PaginaCadastro {
   private readonly page: Page;
+  private readonly botaoVisitarPaginaCadastro: Locator;
   private readonly campoDataNascimento: Locator;
   private readonly campoNome: Locator;
   private readonly campoCPF: Locator;
@@ -20,6 +21,9 @@ export default class PaginaCadastro {
 
   constructor(page: Page) {
     this.page = page;
+    this.botaoVisitarPaginaCadastro = page.getByTestId(
+      'header-botao-cadastre-se'
+    );
     this.campoNome = page.getByTestId('form-base-input-nome');
     this.campoDataNascimento = page.getByTestId(
       'form-base-input-data-nascimento'
@@ -49,8 +53,8 @@ export default class PaginaCadastro {
 
   async visitar() {
     await this.page.goto('/');
-    // await this.botaoLogin.click();
-    // await expect(this.page).toHaveURL('/auth/login');
+    await this.botaoVisitarPaginaCadastro.click();
+    await expect(this.page).toHaveURL('/auth/cadastro');
   }
 
   async estaMostrandoMensagemDeErro(mensagem: string) {
