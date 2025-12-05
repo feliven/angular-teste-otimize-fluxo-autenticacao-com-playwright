@@ -1,6 +1,5 @@
-import { gerarPerfil, Perfil } from 'e2e/operacoes/gerarPerfil';
+import { gerarPerfil, Perfil } from '../operacoes/gerarPerfil';
 import { test } from '../setup/fixtures';
-import PaginaCadastro from 'e2e/page-objects/PaginaCadastro';
 
 test.describe('Página de cadastro', () => {
   let novoUsuario: Perfil;

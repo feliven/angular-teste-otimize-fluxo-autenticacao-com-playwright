@@ -1,5 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
-import { Genero, Perfil } from 'e2e/operacoes/gerarPerfil';
+import { Genero, Perfil } from '../operacoes/gerarPerfil';
 
 export default class PaginaCadastro {
   private readonly page: Page;
